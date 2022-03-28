@@ -8,11 +8,11 @@ public class EntityIdGenerator {
     private EntityIdGenerator() {
     }
 
-    public static long generateTruckId() {
-        return truckId++;
+    public static long generateTerminalId() {
+        return ++terminalId;
     }
 
-    public static long generateTerminalId() {
-        return terminalId++;
+    public static long generateTruckId() {
+        return ++truckId;
     }
 }
