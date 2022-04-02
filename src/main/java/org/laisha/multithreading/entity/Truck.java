@@ -6,13 +6,15 @@ public class Truck implements Runnable {
 
     private final long truckId;
     private TruckType type;
-    private int capacity;
+    private int currentLoading;
+    private int maxCapacity;
 
-    public Truck(TruckType type, int capacity) {
+    public Truck(TruckType type, int currentLoading, int maxCapacity) {
 
         this.truckId = EntityIdGenerator.generateTruckId();
         this.type = type;
-        this.capacity = capacity;
+        this.currentLoading = currentLoading;
+        this.maxCapacity = maxCapacity;
     }
 
     @Override
@@ -20,23 +22,16 @@ public class Truck implements Runnable {
 
         LogisticCentre centre = LogisticCentre.getInstance();
         Terminal currentTerminal = centre.takeTerminal(type);
-        if (capacity == 0) {
+        if (currentLoading == 0) {
             currentTerminal.loadTruck(this);
         } else {
-            currentTerminal. unloadTruck(this);
+            currentTerminal.unloadTruck(this);
         }
+        centre.releaseTerminal(currentTerminal);
     }
 
     public long getTruckId() {
         return truckId;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
     }
 
     public TruckType getType() {
@@ -45,6 +40,22 @@ public class Truck implements Runnable {
 
     public void setType(TruckType type) {
         this.type = type;
+    }
+
+    public int getCurrentLoading() {
+        return currentLoading;
+    }
+
+    public void setCurrentLoading(int currentLoading) {
+        this.currentLoading = currentLoading;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 
     @Override
@@ -56,14 +67,17 @@ public class Truck implements Runnable {
         if (obj == null) {
             return false;
         }
-        if (getClass() !=  obj.getClass()) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         Truck truck = (Truck) obj;
         if (truckId != truck.truckId) {
             return false;
         }
-        if (capacity != truck.capacity) {
+        if (currentLoading != truck.currentLoading) {
+            return false;
+        }
+        if (maxCapacity != truck.maxCapacity) {
             return false;
         }
         return type == truck.type;
@@ -74,7 +88,8 @@ public class Truck implements Runnable {
 
         int result = (int) (truckId ^ (truckId >>> 32));
         result = 31 * result + type.hashCode();
-        result = 31 * result + capacity;
+        result = 31 * result + currentLoading;
+        result = 31 * result + maxCapacity;
         return result;
     }
 
@@ -84,7 +99,8 @@ public class Truck implements Runnable {
         final StringBuilder sb = new StringBuilder("Truck{");
         sb.append("truckId=").append(truckId);
         sb.append(", type=").append(type);
-        sb.append(", capacity=").append(capacity);
+        sb.append(", currentCapacity=").append(currentLoading);
+        sb.append(", maxCapacity=").append(maxCapacity);
         sb.append('}');
         return sb.toString();
     }
