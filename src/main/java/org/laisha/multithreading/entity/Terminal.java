@@ -11,10 +11,8 @@ public class Terminal {
 
     private static final Logger logger = LogManager.getLogger();
     private final long terminalId;
-
-    private static final LogisticCentre centre = LogisticCentre.getInstance();
-    private static final long LOADING_TIME_ONE_OF_CAPACITY = 5;
-    private static final long UNLOADING_TIME_ONE_OF_CAPACITY = 3;
+    private static final long LOADING_TIME_ONE_OF_CAPACITY = 15;
+    private static final long UNLOADING_TIME_ONE_OF_CAPACITY = 10;
     private static final int LOADING_OF_UNLOADED_TRUCK = 0;
 
     public Terminal() {
@@ -23,6 +21,7 @@ public class Terminal {
 
     public void loadTruck(Truck truck) {
 
+        LogisticCentre centre = LogisticCentre.getInstance();
         do {
             if (centre.getCurrentLoading().get() >= truck.getMaxCapacity()) {
                 centre.unloadCargoFromCentre(truck.getMaxCapacity());
@@ -39,6 +38,7 @@ public class Terminal {
 
     public void unloadTruck(Truck truck) {
 
+        LogisticCentre centre = LogisticCentre.getInstance();
         do {
             if (centre.getCurrentLoading().get() + truck.getCurrentLoading()
                     <= centre.getCapacity()) {
@@ -63,7 +63,7 @@ public class Terminal {
         try {
             TimeUnit.MILLISECONDS.sleep(processTime);
         } catch (InterruptedException e) {
-            logger.log(Level.WARN, "The thread \"{}\" was interrupted while sleeping. {}",
+            logger.log(Level.WARN, "The thread \"{}\" was interrupted while sleeping. {}.",
                     Thread.currentThread().getName(), e);
             Thread.currentThread().interrupt();
         }
