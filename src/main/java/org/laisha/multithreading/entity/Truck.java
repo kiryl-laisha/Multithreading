@@ -2,7 +2,7 @@ package org.laisha.multithreading.entity;
 
 import org.laisha.multithreading.util.EntityIdGenerator;
 
-public class Truck implements Runnable {
+public class Truck extends Thread {
 
     private final long truckId;
     private TruckType type;
