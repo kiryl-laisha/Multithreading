@@ -26,8 +26,8 @@ public class LogisticCentre {
     private static AtomicBoolean isCreatedInstance = new AtomicBoolean(false);
     private static ReaderFromFileImpl reader = ReaderFromFileImpl.getInstance();
     private static ReentrantLock lock = new ReentrantLock();
-    private static String filePathForCentreData;
-    private final Deque<Terminal> terminals = new ArrayDeque();
+    private static String filePathForCentreDatabase;
+    private final Deque<Terminal> terminals = new ArrayDeque<>();
     private Semaphore nonPriorityTruckSemaphore = new Semaphore(1, true);
     private Semaphore priorityTruckSemaphore;
     private AtomicInteger currentLoading = new AtomicInteger();
@@ -36,21 +36,21 @@ public class LogisticCentre {
 
     public LogisticCentre() {
 
-        if (filePathForCentreData == null) {
-            filePathForCentreData = DEFAULT_FILE_PATH_FOR_DATA;
+        if (filePathForCentreDatabase == null) {
+            filePathForCentreDatabase = DEFAULT_FILE_PATH_FOR_DATA;
         }
-        List<String> centreDataList;
+        List<String> centreDatabaseList;
         try {
-            centreDataList = reader.readStringListFromFile(filePathForCentreData);
+            centreDatabaseList = reader.readStringListFromFile(filePathForCentreDatabase);
         } catch (ProjectException e) {
             logger.log(Level.ERROR, "The logistic centre structure could not be" +
                     "created. Further work is impossible.");
             throw new RuntimeException("Work is impossible without the structure of " +
                     "the logistic centre.");
         }
-        capacity = Integer.parseInt(centreDataList.get(CAPACITY_LIST_INDEX));
-        currentLoading.set(Integer.parseInt(centreDataList.get(CURRENT_LOADING_LIST_INDEX)));
-        terminalQuantity = Integer.parseInt(centreDataList.get(TERMINAL_QUANTITY_LIST_INDEX));
+        capacity = Integer.parseInt(centreDatabaseList.get(CAPACITY_LIST_INDEX));
+        currentLoading.set(Integer.parseInt(centreDatabaseList.get(CURRENT_LOADING_LIST_INDEX)));
+        terminalQuantity = Integer.parseInt(centreDatabaseList.get(TERMINAL_QUANTITY_LIST_INDEX));
         for (int i = 0; i < terminalQuantity; i++) {
             terminals.add(new Terminal());
         }
@@ -81,6 +81,7 @@ public class LogisticCentre {
                 while (priorityTruckSemaphore.availablePermits() < 1) {
                     TimeUnit.MILLISECONDS.sleep(UNLOADING_TIME_ONE_OF_CAPACITY);
                 }
+                nonPriorityTruckSemaphore.release();
             }
             priorityTruckSemaphore.acquire();
         } catch (InterruptedException e) {

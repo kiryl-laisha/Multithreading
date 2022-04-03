@@ -13,7 +13,7 @@ public class LogisticCentreLoadingController extends TimerTask {
     private static final LogisticCentre centre = LogisticCentre.getInstance();
     private static final int MIN_PERMISSIBLE_LOADING_PERCENT = 20;
     private static final int MAX_PERMISSIBLE_LOADING_PERCENT = 80;
-    private static final int CONTROLLER_ACTION_PERCENT = 3;
+    private static final int CONTROLLER_ACTION_PERCENT = 5;
     private int controllerBalance = 0;
 
     @Override
@@ -27,7 +27,7 @@ public class LogisticCentreLoadingController extends TimerTask {
             centre.storeCargoInCentre(storedCargo);
             controllerBalance = controllerBalance - storedCargo;
             currentLoading = centre.getCurrentLoading();
-            logger.log(Level.DEBUG, "The logistic centre has been stored by {}",
+            logger.log(Level.DEBUG, "The logistic centre has been stored by {}.",
                     storedCargo);
         }
         while (currentLoading.get() > capacity * MAX_PERMISSIBLE_LOADING_PERCENT / 100) {
@@ -35,10 +35,11 @@ public class LogisticCentreLoadingController extends TimerTask {
             centre.unloadCargoFromCentre(unloadedCargo);
             controllerBalance = controllerBalance + unloadedCargo;
             currentLoading = centre.getCurrentLoading();
-            logger.log(Level.DEBUG, "The logistic centre has been unloaded by {}",
+            logger.log(Level.DEBUG, "The logistic centre has been unloaded by {}.",
                     unloadedCargo);
         }
-        logger.log(Level.DEBUG, "Loading controller has been finished.");
+        logger.log(Level.DEBUG, "Loading controller has been finished. " +
+                "Loading controller balance is {}.", controllerBalance);
     }
 
     public int getControllerBalance() {
