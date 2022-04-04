@@ -34,7 +34,7 @@ public class LogisticCentre {
     private int capacity;
     private int terminalQuantity;
 
-    public LogisticCentre() {
+    private LogisticCentre() {
 
         if (filePathForCentreDatabase == null) {
             filePathForCentreDatabase = DEFAULT_FILE_PATH_FOR_DATA;
