@@ -51,6 +51,7 @@ public class LogisticCentreMain {
         }
         logger.log(Level.INFO, "Logistic centre has ended its working. " +
                 "Loading controller balance is {}.", controller.getControllerBalance());
+        timer.cancel();
         controller.cancel();
     }
 }
