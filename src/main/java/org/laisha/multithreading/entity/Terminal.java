@@ -14,6 +14,7 @@ public class Terminal {
     private static final long LOADING_TIME_ONE_OF_CAPACITY = 15;
     private static final long UNLOADING_TIME_ONE_OF_CAPACITY = 10;
     private static final int LOADING_OF_UNLOADED_TRUCK = 0;
+    public static LogisticCentre centre;
 
     public Terminal() {
         this.terminalId = EntityIdGenerator.generateTerminalId();
@@ -21,9 +22,8 @@ public class Terminal {
 
     public void loadTruck(Truck truck) {
 
-        LogisticCentre centre = LogisticCentre.getInstance();
         do {
-            if (centre.getCurrentLoading().get() >= truck.getMaxCapacity()) {
+            if (centre.getCurrentLoading() >= truck.getMaxCapacity()) {
                 centre.unloadCargoFromCentre(truck.getMaxCapacity());
                 waitProcessTime(truck.getMaxCapacity() * LOADING_TIME_ONE_OF_CAPACITY);
                 truck.setCurrentLoading(truck.getMaxCapacity());
@@ -38,9 +38,8 @@ public class Terminal {
 
     public void unloadTruck(Truck truck) {
 
-        LogisticCentre centre = LogisticCentre.getInstance();
         do {
-            if (centre.getCurrentLoading().get() + truck.getCurrentLoading()
+            if (centre.getCurrentLoading() + truck.getCurrentLoading()
                     <= centre.getCapacity()) {
                 centre.storeCargoInCentre(truck.getCurrentLoading());
                 waitProcessTime(truck.getCurrentLoading() * UNLOADING_TIME_ONE_OF_CAPACITY);

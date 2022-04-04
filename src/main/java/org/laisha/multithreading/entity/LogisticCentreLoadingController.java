@@ -20,12 +20,12 @@ public class LogisticCentreLoadingController extends TimerTask {
 
         logger.log(Level.DEBUG, "Loading controller has been started.");
         int capacity = centre.getCapacity();
-        int currentLoading = centre.getCurrentLoading().get();
+        int currentLoading = centre.getCurrentLoading();
         while (currentLoading < capacity * MIN_PERMISSIBLE_LOADING_PERCENT / 100) {
             int storedCargo = capacity * CONTROLLER_ACTION_PERCENT / 100;
             centre.storeCargoInCentre(storedCargo);
             controllerBalance = controllerBalance - storedCargo;
-            currentLoading = centre.getCurrentLoading().get();
+            currentLoading = centre.getCurrentLoading();
             logger.log(Level.DEBUG, "The logistic centre has been stored by {}.",
                     storedCargo);
         }
@@ -33,7 +33,7 @@ public class LogisticCentreLoadingController extends TimerTask {
             int unloadedCargo = capacity * CONTROLLER_ACTION_PERCENT / 100;
             centre.unloadCargoFromCentre(unloadedCargo);
             controllerBalance = controllerBalance + unloadedCargo;
-            currentLoading = centre.getCurrentLoading().get();
+            currentLoading = centre.getCurrentLoading();
             logger.log(Level.DEBUG, "The logistic centre has been unloaded by {}.",
                     unloadedCargo);
         }

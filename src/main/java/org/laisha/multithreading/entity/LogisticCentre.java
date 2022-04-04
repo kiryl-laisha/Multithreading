@@ -22,14 +22,14 @@ public class LogisticCentre {
     private static final int TERMINAL_QUANTITY_LIST_INDEX = 2;
     private static final long UNLOADING_TIME_ONE_OF_CAPACITY = 3;
 
+    private static final AtomicBoolean isCreatedInstance = new AtomicBoolean(false);
+    private static final ReaderFromFileImpl reader = ReaderFromFileImpl.getInstance();
+    private static final ReentrantLock lock = new ReentrantLock();
     private static LogisticCentre instance;
-    private static AtomicBoolean isCreatedInstance = new AtomicBoolean(false);
-    private static ReaderFromFileImpl reader = ReaderFromFileImpl.getInstance();
-    private static ReentrantLock lock = new ReentrantLock();
     private static String filePathForCentreDatabase;
     private final Deque<Terminal> terminals = new ArrayDeque<>();
-    private Semaphore nonPriorityTruckSemaphore = new Semaphore(1, true);
-    private Semaphore priorityTruckSemaphore;
+    private final Semaphore nonPriorityTruckSemaphore = new Semaphore(1, true);
+    private final Semaphore priorityTruckSemaphore;
     private AtomicInteger currentLoading = new AtomicInteger();
     private int capacity;
     private int terminalQuantity;
@@ -65,6 +65,7 @@ public class LogisticCentre {
                 if (instance == null) {
                     instance = new LogisticCentre();
                     isCreatedInstance.set(true);
+                    Terminal.centre = instance;
                 }
             } finally {
                 lock.unlock();
@@ -122,8 +123,8 @@ public class LogisticCentre {
         currentLoading.set(currentLoading.get() - cargoQuantity);
     }
 
-    public AtomicInteger getCurrentLoading() {
-        return currentLoading;
+    public int getCurrentLoading() {
+        return currentLoading.get();
     }
 
     public void setCurrentLoading(AtomicInteger currentLoading) {
@@ -136,6 +137,14 @@ public class LogisticCentre {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public int getTerminalQuantity() {
+        return terminalQuantity;
+    }
+
+    public void setTerminalQuantity(int terminalQuantity) {
+        this.terminalQuantity = terminalQuantity;
     }
 
     public Deque<Terminal> getTerminals() {
